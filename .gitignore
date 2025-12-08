@@ -5,6 +5,10 @@ build/
 *.exe
 *.a
 
+# Data files
+*.dat
+restaurants_data.dat
+
 # VS Code
 .vscode/
 
@@ -13,3 +17,7 @@ build/
 *~
 .DS_Store
 Thumbs.db
+
+# Windows
+Thumbs.db
+desktop.ini

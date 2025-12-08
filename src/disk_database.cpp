@@ -107,7 +107,7 @@ DiskDatabase::DiskDatabase(const string& filepath) : dataFilePath(filepath), rat
 
 DiskDatabase::~DiskDatabase() 
 {
-    cout << "Database closed" << endl;
+    //cout << "Database closed" << endl;
 }
 
 string DiskDatabase::generateId() 
@@ -141,7 +141,7 @@ FileOffset DiskDatabase::writeRestaurantToDisk(const Restaurant& r) {
     
     file.close();
     
-    cout << "Written to disk at offset: " << offset << endl;
+    //cout << "Written to disk at offset: " << offset << endl;
     
     return offset;
 }
@@ -227,7 +227,7 @@ void DiskDatabase::rebuildIndexes() {
     
     file.close();
     
-    cout << "Indexing done" << endl;
+    //cout << "Indexing done" << endl;
 }
 
 string DiskDatabase::addRestaurant(const string& name, const string& location,const vector<string>& cuisineTypes, float rating,float avgPrice, const vector<Dish>& dishes,const string& notes) {

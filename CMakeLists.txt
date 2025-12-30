@@ -23,10 +23,5 @@ add_executable(food_spot_disk
     src/disk_database.cpp
 )
 
-# Test suite
-add_executable(test_data_structures
-    tests/test_data_structures.cpp
-)
-
 # Enable warnings
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")

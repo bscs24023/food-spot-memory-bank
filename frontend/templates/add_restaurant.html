@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Add New Restaurant</h2>
+<form method="post">
+    Name: <input type="text" name="name" required><br>
+    Location: <input type="text" name="location" required><br>
+    Cuisine (comma separated): <input type="text" name="cuisines"><br>
+    Rating: <input type="number" name="rating" step="0.1"><br>
+    Average Price: <input type="number" name="avg_price" step="0.01"><br>
+    Notes: <textarea name="notes"></textarea><br>
+    <h3>Dish</h3>
+    Name: <input type="text" name="dish_name"><br>
+    Rating: <input type="number" name="dish_rating" step="0.1"><br>
+    Price: <input type="number" name="dish_price" step="0.01"><br>
+    <button type="submit">Add Restaurant</button>
+</form>
+<p>{{ message }}</p>
+{% endblock %}

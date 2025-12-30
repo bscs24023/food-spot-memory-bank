@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>My Friends</h2>
+{% for f in friends %}
+<p>{{ f }}</p>
+{% endfor %}
+<form method="post">
+    Add Friend: <input type="text" name="friend_name">
+    <button type="submit">Add</button>
+</form>
+<p>{{ message }}</p>
+{% endblock %}

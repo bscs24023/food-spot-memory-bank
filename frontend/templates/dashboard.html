@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Welcome, {{ user }}</h2>
+<p>Total Restaurants: {{ stats.total_restaurants }}</p>
+<p>Last Visit: {{ stats.last_visit }}</p>
+<p>Top Cuisines: {{ stats.top_cuisines | join(', ') }}</p>
+{% endblock %}

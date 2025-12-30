@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>My Restaurants</h2>
+{% for r in restaurants %}
+<div>
+    <h3>{{ r.name }} ({{ r.location }})</h3>
+    <p>Rating: {{ r.overall_rating }} | Avg Price: {{ r.avg_price }}</p>
+    <p>Cuisines: {{ r.cuisines | join(', ') }}</p>
+    <p>Notes: {{ r.notes }}</p>
+</div>
+<hr>
+{% endfor %}
+{% endblock %}

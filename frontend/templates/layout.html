@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Spot Memory Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Food Spot Memory Bank</h1>
+        <nav>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a> |
+            <a href="{{ url_for('add_restaurant') }}">Add Restaurant</a> |
+            <a href="{{ url_for('restaurant_list') }}">My Restaurants</a> |
+            <a href="{{ url_for('recommendations') }}">Recommendations</a> |
+            <a href="{{ url_for('alerts') }}">Alerts</a> |
+            <a href="{{ url_for('friends') }}">Friends</a> |
+            <a href="{{ url_for('preferences') }}">Preferences</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

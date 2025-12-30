@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Friend Recommendations</h2>
+{% for r in friend_recs %}
+<div>
+    <h3>{{ r.name }} (Score: {{ r.score }})</h3>
+    <p>Location: {{ r.location }}</p>
+    <p>Cuisines: {{ r.cuisines | join(', ') }}</p>
+</div>
+{% endfor %}
+
+<h2>City Recommendations</h2>
+{% for r in city_recs %}
+<div>
+    <h3>{{ r.name }} (Score: {{ r.score }})</h3>
+    <p>Location: {{ r.location }}</p>
+    <p>Cuisines: {{ r.cuisines | join(', ') }}</p>
+</div>
+{% endfor %}
+{% endblock %}

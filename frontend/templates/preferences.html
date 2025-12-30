@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Your Cuisine Preferences</h2>
+{% for p in preferences %}
+<p>{{ p.cuisine }} - {{ p.count }} times</p>
+{% endfor %}
+{% endblock %}

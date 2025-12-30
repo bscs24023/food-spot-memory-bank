@@ -40,31 +40,32 @@ struct ScoredRestaurant {
 class RecommendationSystem {
 private:
     UserManager* userManager;
-    
     unordered_map<string, unordered_map<string, int>> userCuisinePreferences;
-    
+
     vector<string> getTopCuisines(const string& userID, int topN = 3);
-    
     float calculateScore(const Restaurant& restaurant,
                         const vector<string>& preferredCuisines);
-    
     vector<Restaurant> loadUserRestaurants(const string& userID);
-    
     vector<Restaurant> loadFriendsRestaurants(const string& userID);
-    
+
 public:
     RecommendationSystem(UserManager* um);
-    
+
     void updatePreferences(const string& userID, const vector<string>& cuisines);
-    
+
     vector<ScoredRestaurant> getRecommendationsFromFriends(const string& userID,
                                                            int limit = 10);
-    
+
     vector<ScoredRestaurant> getRecommendationsByCity(const string& userID,
                                                       const string& city,
                                                       int limit = 10);
-    
+
     void displayUserPreferences(const string& userID);
+
+    // --- PUBLIC WRAPPER for Pybind11 ---
+    vector<string> getTopCuisinesPublic(const string& userID, int topN = 3) {
+        return getTopCuisines(userID, topN);
+    }
 };
 
 #endif

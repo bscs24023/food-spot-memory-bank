@@ -7,8 +7,7 @@
 #include "../include/disk_database.h"
 
 namespace py = pybind11;
-
-PYBIND11_MODULE(pybind11_module, m) {
+PYBIND11_MODULE(py_foodspot, m) {
     m.doc() = "Python wrapper for FoodSpotMemoryBank C++ multiuser system";
 
     // --- DiskDatabase ---

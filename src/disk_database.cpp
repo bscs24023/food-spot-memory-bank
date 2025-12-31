@@ -388,3 +388,44 @@ void DiskDatabase::displayAll() {
 int DiskDatabase::getTotalRestaurants() const {
     return nextId - 1;
 }
+vector<Restaurant> DiskDatabase::getAllRestaurants() {
+    vector<Restaurant> restaurants;
+    
+    ifstream file(dataFilePath, ios::binary);
+    if (!file.good()) {
+        cout << "  File not found: " << dataFilePath << endl;
+        return restaurants;
+    }
+    
+    cout << "  Reading from: " << dataFilePath << endl;
+    
+    while (file.good() && file.peek() != EOF) {
+        FileOffset offset = file.tellg();
+        
+        Restaurant r;
+        r.restaurantId = readString(file);
+        if (r.restaurantId.empty()) break;
+        
+        r.name = readString(file);
+        r.location = readString(file);
+        r.cuisineTypes = readStringVector(file);
+        
+        file.read(reinterpret_cast<char*>(&r.overallRating), sizeof(r.overallRating));
+        file.read(reinterpret_cast<char*>(&r.averagePrice), sizeof(r.averagePrice));
+        
+        r.dishes = readDishVector(file);
+        
+        file.read(reinterpret_cast<char*>(&r.lastVisitDate), sizeof(r.lastVisitDate));
+        file.read(reinterpret_cast<char*>(&r.totalVisits), sizeof(r.totalVisits));
+        
+        r.notes = readString(file);
+        
+        restaurants.push_back(r);
+        
+        cout << "    Read: " << r.name << " (ID: " << r.restaurantId << ")" << endl;
+    }
+    
+    file.close();
+    cout << "  Total restaurants read: " << restaurants.size() << endl;
+    return restaurants;
+}

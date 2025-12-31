@@ -62,10 +62,11 @@ public:
 
     void displayUserPreferences(const string& userID);
 
-    // --- PUBLIC WRAPPER for Pybind11 ---
     vector<string> getTopCuisinesPublic(const string& userID, int topN = 3) {
         return getTopCuisines(userID, topN);
     }
+
+    vector<ScoredRestaurant> getGeneralRecommendations(const string& userID, int limit = 10);
 };
 
 #endif

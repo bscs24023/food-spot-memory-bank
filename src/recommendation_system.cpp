@@ -199,7 +199,6 @@ vector<ScoredRestaurant> RecommendationSystem::getRecommendationsFromFriends(
     
     for (const auto& restaurant : friendsRestaurants) {
         float score = calculateScore(restaurant, topCuisines);
-        
         scoredRestaurants.push_back(
             ScoredRestaurant(restaurant, score, "Friend", "")
         );
@@ -213,7 +212,6 @@ vector<ScoredRestaurant> RecommendationSystem::getRecommendationsFromFriends(
     
     return scoredRestaurants;
 }
-
 vector<ScoredRestaurant> RecommendationSystem::getRecommendationsByCity(
     const string& userID, const string& city, int limit) {
     
@@ -284,9 +282,7 @@ void RecommendationSystem::displayUserPreferences(const string& userID) {
         return;
     }
     
-    cout << "\n========================================" << endl;
     cout << "   YOUR CUISINE PREFERENCES" << endl;
-    cout << "========================================" << endl;
     
     vector<pair<string, int>> prefs(cuisineMap.begin(), cuisineMap.end());
     sort(prefs.begin(), prefs.end(), 
@@ -297,5 +293,122 @@ void RecommendationSystem::displayUserPreferences(const string& userID) {
     for (const auto& pair : prefs) {
         cout << "  " << pair.first << ": " << pair.second << " time(s)" << endl;
     }
-    cout << "========================================" << endl;
+}
+vector<ScoredRestaurant> RecommendationSystem::getGeneralRecommendations(
+    const string& userID, int limit) {
+    
+    cout << "\n Getting general recommendations" << endl;
+    
+    vector<ScoredRestaurant> recommendations;
+    
+    vector<ScoredRestaurant> friendRecs = getRecommendationsFromFriends(userID, limit);
+    
+    if (!friendRecs.empty()) {
+        cout << "  Found " << friendRecs.size() << " friend recommendations" << endl;
+        return friendRecs;
+    }
+    
+    vector<string> topCuisines = getTopCuisines(userID, 3);
+    
+    if (topCuisines.empty()) {
+        cout << "  No preferences yet. Using default popular restaurants" << endl;
+        
+        Restaurant r1;
+        r1.name = "Cosa Nostra";
+        r1.location = "DHA";
+        r1.cuisineTypes = {"Italian"};
+        r1.overallRating = 9.5;
+        r1.averagePrice = 2500;
+        
+        Restaurant r2;
+        r2.name = "Bundu Khan";
+        r2.location = "Gulberg";
+        r2.cuisineTypes = {"Pakistani"};
+        r2.overallRating = 9.2;
+        r2.averagePrice = 1500;
+        
+        Restaurant r3;
+        r3.name = "Jade Cafe";
+        r3.location = "MM Alam";
+        r3.cuisineTypes = {"Chinese"};
+        r3.overallRating = 8.7;
+        r3.averagePrice = 2000;
+        
+        Restaurant r4;
+        r4.name = "Butt Karahi";
+        r4.location = "Iqbal Town";
+        r4.cuisineTypes = {"Pakistani"};
+        r4.overallRating = 9.0;
+        r4.averagePrice = 1200;
+        
+        Restaurant r5;
+        r5.name = "Pizza Hut";
+        r5.location = "Liberty";
+        r5.cuisineTypes = {"Italian", "Fast Food"};
+        r5.overallRating = 8.5;
+        r5.averagePrice = 1800;
+        
+        recommendations.push_back(ScoredRestaurant(r1, 95, "Popular", ""));
+        recommendations.push_back(ScoredRestaurant(r2, 92, "Popular", ""));
+        recommendations.push_back(ScoredRestaurant(r3, 87, "Popular", ""));
+        recommendations.push_back(ScoredRestaurant(r4, 85, "Popular", ""));
+        recommendations.push_back(ScoredRestaurant(r5, 82, "Popular", ""));
+        
+    } else {
+        cout << "  Trying city-based recommendations..." << endl;
+        vector<string> cities = {"Lahore", "Karachi", "Islamabad"};
+        
+        for (const auto& city : cities) {
+            vector<ScoredRestaurant> cityRecs = getRecommendationsByCity(userID, city, limit);
+            
+            if (!cityRecs.empty()) {
+                recommendations.insert(recommendations.end(), 
+                                      cityRecs.begin(), 
+                                      cityRecs.end());
+                cout << "  Found " << cityRecs.size() << " in " << city << endl;
+                
+                if (recommendations.size() >= (size_t)limit) {
+                    break;
+                }
+            }
+        }
+    }
+    
+    if (recommendations.empty()) {
+        cout << "  No city recommendations. Using default popular restaurants" << endl;
+        
+        Restaurant r1;
+        r1.name = "Cosa Nostra";
+        r1.location = "DHA";
+        r1.cuisineTypes = {"Italian"};
+        r1.overallRating = 9.5;
+        r1.averagePrice = 2500;
+        
+        Restaurant r2;
+        r2.name = "Bundu Khan";
+        r2.location = "Gulberg";
+        r2.cuisineTypes = {"Pakistani"};
+        r2.overallRating = 9.2;
+        r2.averagePrice = 1500;
+        
+        Restaurant r3;
+        r3.name = "Jade Cafe";
+        r3.location = "MM Alam";
+        r3.cuisineTypes = {"Chinese"};
+        r3.overallRating = 8.7;
+        r3.averagePrice = 2000;
+        
+        recommendations.push_back(ScoredRestaurant(r1, 95, "Popular", ""));
+        recommendations.push_back(ScoredRestaurant(r2, 92, "Popular", ""));
+        recommendations.push_back(ScoredRestaurant(r3, 87, "Popular", ""));
+    }
+    
+    sort(recommendations.begin(), recommendations.end());
+    
+    if (recommendations.size() > (size_t)limit) {
+        recommendations.resize(limit);
+    }
+    
+    cout << "  Returning " << recommendations.size() << " general recommendations" << endl;
+    return recommendations;
 }

@@ -54,6 +54,7 @@ public:
     void displayAll();
     
     int getTotalRestaurants() const;
+    vector<Restaurant> getAllRestaurants();
 };
 
 #endif

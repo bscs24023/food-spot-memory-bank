@@ -1,9 +1,0 @@
-{% extends "layout.html" %}
-{% block content %}
-<h2>Alerts</h2>
-{% for a in alerts %}
-<div>
-    <p>{{ a.sender }} added restaurant {{ a.restaurant_name }} on {{ a.timestamp }}</p>
-</div>
-{% endfor %}
-{% endblock %}

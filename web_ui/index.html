@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Spot Memory Bank</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <div id="loginScreen" class="screen">
+            <div class="auth-box">
+                <h1><i class="fas fa-utensils"></i> Food Spot</h1>
+                <p class="subtitle">Track. Share. Discover.</p>
+                
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('login')">Login</button>
+                    <button class="tab-btn" onclick="showTab('register')">Register</button>
+                </div>
+                
+                <div id="loginTab" class="tab-content">
+                    <input type="text" id="loginUser" placeholder="Username" class="input-field">
+                    <input type="password" id="loginPass" placeholder="Password" class="input-field">
+                    <button onclick="login()" class="btn primary-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <div id="loginMessage" class="message"></div>
+                </div>
+                
+                <div id="registerTab" class="tab-content" style="display:none;">
+                    <input type="text" id="regUser" placeholder="Username" class="input-field">
+                    <input type="email" id="regEmail" placeholder="Email" class="input-field">
+                    <input type="password" id="regPass" placeholder="Password" class="input-field">
+                    <button onclick="register()" class="btn primary-btn">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                    <div id="registerMessage" class="message"></div>
+                </div>
+            </div>
+        </div>
+        
+\        <div id="dashboard" class="screen" style="display:none;">
+            <nav class="sidebar">
+                <div class="user-info">
+                    <h3><i class="fas fa-user-circle"></i> <span id="usernameDisplay">User</span></h3>
+                    <small id="userIDDisplay"></small>
+                </div>
+                
+                <div class="nav-menu">
+                    <a href="#" onclick="showSection('home')" class="nav-item active">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="#" onclick="showSection('add')" class="nav-item">
+                        <i class="fas fa-plus-circle"></i> Add Restaurant
+                    </a>
+                    <a href="#" onclick="showSection('myrest')" class="nav-item">
+                        <i class="fas fa-utensils"></i> My Restaurants
+                    </a>
+                    <a href="#" onclick="showSection('recommend')" class="nav-item">
+                        <i class="fas fa-star"></i> Recommendations
+                    </a>
+                    <a href="#" onclick="showSection('friends')" class="nav-item">
+                        <i class="fas fa-users"></i> Friends
+                    </a>
+                    <a href="#" onclick="showSection('alerts')" class="nav-item">
+                        <i class="fas fa-bell"></i> Alerts <span id="alertBadge" class="badge"></span>
+                    </a>
+                    <a href="#" onclick="logout()" class="nav-item logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </nav>
+            
+            <main class="main-content">
+\                <section id="homeSection" class="section">
+                    <h2><i class="fas fa-home"></i> Dashboard</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-utensils"></i>
+                            <h3 id="restCount">0</h3>
+                            <p>Restaurants</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <h3 id="friendCount">0</h3>
+                            <p>Friends</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-bell"></i>
+                            <h3 id="alertCount">0</h3>
+                            <p>Alerts</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="addSection" class="section" style="display:none;">
+                    <h2><i class="fas fa-plus-circle"></i> Add New Restaurant</h2>
+                    <div class="form-card">
+                        <input type="text" id="restName" placeholder="Restaurant Name" class="input-field">
+                        <input type="text" id="restLocation" placeholder="Location (e.g., DHA, Gulberg)" class="input-field">
+                        <input type="text" id="restCuisine" placeholder="Cuisine (e.g., Italian, Pakistani)" class="input-field">
+                        <div class="form-row">
+                            <input type="number" step="0.1" min="1" max="10" id="restRating" placeholder="Rating (1-10)" class="input-field half">
+                            <input type="number" id="restPrice" placeholder="Price (Rs.)" class="input-field half">
+                        </div>
+                        <textarea id="restNotes" placeholder="Notes (optional)" class="input-field"></textarea>
+                        <button onclick="addRestaurant()" class="btn primary-btn">
+                            <i class="fas fa-save"></i> Save Restaurant
+                        </button>
+                        <div id="addMessage" class="message"></div>
+                    </div>
+                </section>
+                
+                <section id="myrestSection" class="section" style="display:none;">
+                    <h2><i class="fas fa-utensils"></i> My Restaurants</h2>
+                    
+                    <div class="search-box">
+                        <div class="search-tabs">
+                            <button class="search-tab active" onclick="showSearchTab('all')">
+                                <i class="fas fa-search"></i> Search All
+                            </button>
+                            <button class="search-tab" onclick="showSearchTab('cuisine')">
+                                <i class="fas fa-utensils"></i> By Cuisine
+                            </button>
+                            <button class="search-tab" onclick="showSearchTab('location')">
+                                <i class="fas fa-map-marker-alt"></i> By Location
+                            </button>
+                            <button class="search-tab" onclick="showSearchTab('rating')">
+                                <i class="fas fa-star"></i> By Rating
+                            </button>
+                            <button class="search-tab" onclick="showSearchTab('price')">
+                                <i class="fas fa-tag"></i> By Price
+                            </button>
+                        </div>
+                        
+                        <div id="searchAllTab" class="search-form">
+                            <input type="text" id="searchName" placeholder="Search by name or notes..." class="input-field">
+                            <button onclick="searchAll()" class="btn primary-btn">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        
+                        <div id="searchCuisineTab" class="search-form" style="display:none;">
+                            <input type="text" id="searchCuisine" placeholder="e.g., Arabic, Pakistani, Chinese" class="input-field">
+                            <button onclick="searchByCuisine()" class="btn primary-btn">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        
+                        <div id="searchLocationTab" class="search-form" style="display:none;">
+                            <input type="text" id="searchLocation" placeholder="e.g., DHA, Gulberg, Johar Town" class="input-field">
+                            <button onclick="searchByLocation()" class="btn primary-btn">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        
+                        <div id="searchRatingTab" class="search-form" style="display:none;">
+                            <div class="form-row">
+                                <input type="number" step="0.1" min="0" max="10" id="minRating" placeholder="Min (0-10)" class="input-field half" value="0">
+                                <input type="number" step="0.1" min="0" max="10" id="maxRating" placeholder="Max (0-10)" class="input-field half" value="10">
+                            </div>
+                            <button onclick="searchByRating()" class="btn primary-btn">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        
+                        <div id="searchPriceTab" class="search-form" style="display:none;">
+                            <div class="form-row">
+                                <input type="number" id="minPrice" placeholder="Min Price (Rs.)" class="input-field half" value="0">
+                                <input type="number" id="maxPrice" placeholder="Max Price (Rs.)" class="input-field half" value="10000">
+                            </div>
+                            <button onclick="searchByPrice()" class="btn primary-btn">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        
+                        <div class="search-actions">
+                            <button onclick="loadRestaurants()" class="btn secondary-btn">
+                                <i class="fas fa-list"></i> Show All Restaurants
+                            </button>
+                            <div id="searchResultsInfo" class="search-info"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="restaurantsList" class="cards-container"></div>
+                </section>
+                <section id="recommendSection" class="section" style="display:none;">
+                    <h2><i class="fas fa-star"></i> Recommended for You</h2>
+                    <button onclick="loadRecommendations()" class="btn primary-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh Recommendations
+                    </button>
+                    <div id="recommendationsList" class="cards-container"></div>
+                </section>
+                
+                <section id="friendsSection" class="section" style="display:none;">
+                    <h2><i class="fas fa-users"></i> My Friends</h2>
+                    <div class="form-card">
+                        <input type="text" id="friendUsername" placeholder="Friend's Username" class="input-field">
+                        <button onclick="addFriend()" class="btn primary-btn">
+                            <i class="fas fa-user-plus"></i> Add Friend
+                        </button>
+                    </div>
+                    <div id="friendsList" class="cards-container"></div>
+                </section>
+                
+                <section id="alertsSection" class="section" style="display:none;">
+                    <h2><i class="fas fa-bell"></i> Recent Alerts</h2>
+                    <button onclick="loadAlerts()" class="btn primary-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh Alerts
+                    </button>
+                    <div id="alertsList" class="cards-container"></div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentSection = 'home';
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            document.getElementById('loginTab').style.display = 'none';
+            document.getElementById('registerTab').style.display = 'none';
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.style.display = 'none';
+            });
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.getElementById(section + 'Section').style.display = 'block';
+            event.target.classList.add('active');
+            currentSection = section;
+            
+            if (section === 'myrest') loadRestaurants();
+            else if (section === 'recommend') loadRecommendations();
+            else if (section === 'friends') loadFriends();
+            else if (section === 'alerts') loadAlerts();
+            else if (section === 'home') loadDashboardStats();
+        }
+
+        async function callAPI(endpoint, data = {}) 
+        {
+            console.log(` API Call: ${endpoint}`, data);
+            
+            try {
+                const response = await fetch(`/api/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                console.log(` API Response Status: ${response.status}`);
+                
+                const result = await response.json();
+                console.log(` API Response Data:`, result);
+                
+                return result;
+                
+            } catch (error) {
+                console.error(` API Error for ${endpoint}:`, error);
+                return {status: 'error', message: 'Network error: ' + error.message};
+            }
+        }
+        async function login() {
+            const username = document.getElementById('loginUser').value;
+            const password = document.getElementById('loginPass').value;
+            
+            if (!username || !password) {
+                showMessage('loginMessage', 'Please fill all fields', 'error');
+                return;
+            }
+            
+            const result = await callAPI('login', {username, password});
+            
+            if (result.status === 'success') {
+                currentUser = result;
+                showMessage('loginMessage', 'Login successful!', 'success');
+                
+                setTimeout(() => {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'flex';
+                    document.getElementById('usernameDisplay').textContent = result.username;
+                    document.getElementById('userIDDisplay').textContent = result.userID;
+                    loadDashboardStats();
+                }, 1000);
+            } else {
+                showMessage('loginMessage', result.message || 'Login failed', 'error');
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('regUser').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPass').value;
+            
+            if (!username || !email || !password) {
+                showMessage('registerMessage', 'Please fill all fields', 'error');
+                return;
+            }
+            
+            const result = await callAPI('register', {username, email, password});
+            
+            if (result.status === 'success') {
+                showMessage('registerMessage', 'Registration successful! Please login.', 'success');
+                showTab('login');
+                document.getElementById('regUser').value = '';
+                document.getElementById('regEmail').value = '';
+                document.getElementById('regPass').value = '';
+            } else {
+                showMessage('registerMessage', result.message || 'Registration failed', 'error');
+            }
+        }
+
+        async function addRestaurant() {
+            if (!currentUser) return;
+            
+            const restaurant = {
+                userID: currentUser.userID,
+                name: document.getElementById('restName').value,
+                location: document.getElementById('restLocation').value,
+                cuisine: document.getElementById('restCuisine').value,
+                rating: document.getElementById('restRating').value,
+                price: document.getElementById('restPrice').value,
+                notes: document.getElementById('restNotes').value
+            };
+            
+            if (!restaurant.name || !restaurant.location || !restaurant.cuisine) {
+                showMessage('addMessage', 'Please fill required fields', 'error');
+                return;
+            }
+            
+            const result = await callAPI('add_restaurant', restaurant);
+            
+            if (result.status === 'success') {
+                showMessage('addMessage', 'Restaurant added successfully!', 'success');
+                document.getElementById('restName').value = '';
+                document.getElementById('restLocation').value = '';
+                document.getElementById('restCuisine').value = '';
+                document.getElementById('restRating').value = '';
+                document.getElementById('restPrice').value = '';
+                document.getElementById('restNotes').value = '';
+                loadDashboardStats();
+            } else {
+                showMessage('addMessage', result.message || 'Failed to add restaurant', 'error');
+            }
+        }
+
+
+        async function loadRestaurants() 
+        {
+            if (!currentUser) {
+                console.error(" No current user");
+                return;
+            }
+            
+            console.log(" loadRestaurants called for user:", currentUser.userID);
+            console.log(" Calling API: get_restaurants with userID:", currentUser.userID);
+            
+            const result = await callAPI('get_restaurants', {userID: currentUser.userID});
+            console.log(" API Response received:", result);
+            console.log(" Response status:", result.status);
+            console.log(" Restaurants array:", result.restaurants);
+            console.log(" Number of restaurants:", result.restaurants ? result.restaurants.length : 0);
+            
+            if (result.status === 'success') {
+                const container = document.getElementById('restaurantsList');
+                console.log(" Target container:", container);
+                console.log(" Container ID:", container.id);
+                
+                if (result.restaurants && result.restaurants.length > 0) {
+                    console.log(" Creating restaurant cards.");
+                    
+                    console.log(" First restaurant example:", result.restaurants[0]);
+                    console.log(" First restaurant name:", result.restaurants[0].name);
+                    console.log(" First restaurant location:", result.restaurants[0].location);
+                    
+                    const html = result.restaurants.map(rest => {
+                        console.log(" Processing restaurant:", rest.name);
+                        return `
+                            <div class="card">
+                                <h3>${rest.name || 'Unknown'}</h3>
+                                <p><i class="fas fa-map-marker-alt"></i> ${rest.location || 'N/A'}</p>
+                                <p><i class="fas fa-utensils"></i> ${rest.cuisine || 'N/A'}</p>
+                                <p><i class="fas fa-star"></i> Rating: ${rest.rating || 'N/A'}/10</p>
+                                <p><i class="fas fa-tag"></i> Rs. ${rest.price || 'N/A'}</p>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    console.log(" Generated HTML:", html.substring(0, 200) + "...");
+                    container.innerHTML = html;
+                    console.log(" HTML inserted into container");
+                    
+                } else {
+                    console.log(" No restaurants found");
+                    container.innerHTML = '<div class="empty-state">No restaurants added yet.</div>';
+                }
+            } else {
+                console.error(" API Error:", result.message);
+                alert("Failed to load restaurants: " + (result.message || "Unknown error"));
+            }
+            
+            console.log(" loadRestaurants completed");
+        }
+
+        async function loadRecommendations() 
+        {
+            if (!currentUser) {
+                console.error("Cannot load recommendations: No user logged in");
+                return;
+            }
+            
+            console.log("Loading recommendations for:", currentUser.userID);
+            
+            const result = await callAPI('get_recommendations', {userID: currentUser.userID});
+            console.log("Recommendations API response:", result);
+            
+            if (result.status === 'success') {
+                const container = document.getElementById('recommendationsList');
+                if (result.recommendations && result.recommendations.length > 0) {
+                    console.log("Displaying", result.recommendations.length, "recommendations");
+                    
+                    container.innerHTML = result.recommendations.map(rec => `
+                        <div class="card recommendation-card">
+                            <h3>${rec.name || 'Unknown'}</h3>
+                            <p class="recommendation-source">
+                                <i class="fas fa-user"></i> Recommended by: ${rec.owner || 'System'}
+                            </p>
+                            <p><i class="fas fa-map-marker-alt"></i> ${rec.location || 'N/A'}</p>
+                            <p><i class="fas fa-utensils"></i> ${rec.cuisine || 'N/A'}</p>
+                            <p><i class="fas fa-star"></i> Rating: ${rec.rating || 'N/A'}/10</p>
+                            <p><i class="fas fa-tag"></i> Price: Rs. ${rec.price || 'N/A'}</p>
+                            <p><i class="fas fa-chart-line"></i> Match Score: ${rec.score || 'N/A'}%</p>
+                        </div>
+                    `).join('');
+                } else {
+                    console.log("No recommendations available");
+                    container.innerHTML = '<div class="empty-state">No recommendations available yet. Add some restaurants or friends!</div>';
+                }
+            } else {
+                console.error("Failed to load recommendations:", result.message);
+            }
+        }
+        async function loadFriends() {
+            if (!currentUser) return;
+            
+            const result = await callAPI('get_friends', {userID: currentUser.userID});
+            
+            if (result.status === 'success') {
+                const container = document.getElementById('friendsList');
+                if (result.friends && result.friends.length > 0) {
+                    document.getElementById('friendCount').textContent = result.friends.length;
+                    container.innerHTML = result.friends.map(friend => `
+                        <div class="card">
+                            <h3><i class="fas fa-user"></i> ${friend.username || 'Unknown'}</h3>
+                            <p>ID: ${friend.userID || 'N/A'}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="empty-state">No friends yet. Add some!</div>';
+                }
+            }
+        }
+
+    
+        async function loadAlerts() 
+        {
+            if (!currentUser) return;
+            
+            console.log("Loading alerts for user:", currentUser.userID);
+            
+            const result = await callAPI('get_alerts', {userID: currentUser.userID});
+            console.log("Alerts API response:", result);
+            
+            if (result.status === 'success') {
+                const container = document.getElementById('alertsList');
+                const badge = document.getElementById('alertBadge');
+                
+                if (result.alerts && result.alerts.length > 0) {
+                    console.log("Displaying", result.alerts.length, "alerts");
+                    document.getElementById('alertCount').textContent = result.alerts.length;
+                    
+                    container.innerHTML = result.alerts.map(alert => `
+                        <div class="card alert-card ${alert.read ? 'read' : 'unread'}">
+                            <h3><i class="fas fa-bell"></i> New Restaurant!</h3>
+                            <p><i class="fas fa-user"></i> ${alert.sender || 'Someone'} added a restaurant</p>
+                            <p><i class="fas fa-utensils"></i> ${alert.restaurant || 'New spot'}</p>
+                            <p class="alert-time">${alert.time || 'Recently'}</p>
+                            ${alert.read ? '' : '<span class="new-badge">NEW</span>'}
+                        </div>
+                    `).join('');
+                    
+                    console.log("Marking alerts as read...");
+                    const markResult = await callAPI('mark_alerts_read', {userID: currentUser.userID});
+                    
+                    if (markResult.status === 'success') {
+                        console.log("Alerts marked as read");
+                        badge.textContent = '0';
+                        badge.style.display = 'none';
+                        document.getElementById('alertCount').textContent = '0';
+                        
+                        document.getElementById('alertBadge').textContent = '0';
+                        document.getElementById('alertBadge').style.display = 'none';
+                    }
+                    
+                } else {
+                    console.log("No alerts found");
+                    document.getElementById('alertCount').textContent = '0';
+                    badge.style.display = 'none';
+                    container.innerHTML = '<div class="empty-state">No new alerts.</div>';
+                }
+            }
+        }
+
+        async function loadDashboardStats() {
+            if (!currentUser) return;
+            
+            const restResult = await callAPI('get_restaurants', {userID: currentUser.userID});
+            if (restResult.status === 'success') {
+                document.getElementById('restCount').textContent = 
+                    restResult.restaurants ? restResult.restaurants.length : 0;
+            }
+            
+            const friendResult = await callAPI('get_friends', {userID: currentUser.userID});
+            if (friendResult.status === 'success') {
+                document.getElementById('friendCount').textContent = 
+                    friendResult.friends ? friendResult.friends.length : 0;
+            }
+            
+            const alertResult = await callAPI('get_alerts', {userID: currentUser.userID});
+            if (alertResult.status === 'success') {
+                const unreadAlerts = alertResult.alerts ? 
+                    alertResult.alerts.filter(alert => !alert.read).length : 0;
+                
+                document.getElementById('alertCount').textContent = unreadAlerts;
+                const badge = document.getElementById('alertBadge');
+                
+                if (unreadAlerts > 0) {
+                    badge.textContent = unreadAlerts;
+                    badge.style.display = 'inline';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        async function addFriend() 
+        {
+            if (!currentUser) return;
+            
+            const username = document.getElementById('friendUsername').value;
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            
+            const result = await callAPI('add_friend', {
+                userID: currentUser.userID,
+                username: username
+            });
+            
+            if (result.status === 'success') {
+                alert('Friend added successfully!');
+                document.getElementById('friendUsername').value = '';
+                loadFriends();
+                loadDashboardStats();
+            } else {
+                alert(result.message || 'Failed to add friend');
+            }
+        }
+
+        async function loadDashboardStats() {
+            if (!currentUser) return;
+            
+            const restResult = await callAPI('get_restaurants', {userID: currentUser.userID});
+            if (restResult.status === 'success') {
+                document.getElementById('restCount').textContent = 
+                    restResult.restaurants ? restResult.restaurants.length : 0;
+            }
+            
+            const friendResult = await callAPI('get_friends', {userID: currentUser.userID});
+            if (friendResult.status === 'success') {
+                document.getElementById('friendCount').textContent = 
+                    friendResult.friends ? friendResult.friends.length : 0;
+            }
+            
+            const alertResult = await callAPI('get_alerts', {userID: currentUser.userID});
+            if (alertResult.status === 'success') {
+                document.getElementById('alertCount').textContent = 
+                    alertResult.alerts ? alertResult.alerts.length : 0;
+                const badge = document.getElementById('alertBadge');
+                if (alertResult.alerts && alertResult.alerts.length > 0) {
+                    badge.textContent = alertResult.alerts.length;
+                    badge.style.display = 'inline';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+
+
+        let currentSearchType = 'all';
+
+        function showSearchTab(tab) {
+            document.querySelectorAll('.search-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.search-form').forEach(form => {
+                form.style.display = 'none';
+            });
+            
+            const tabId = 'search' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Tab';
+            document.getElementById(tabId).style.display = 'block';
+            currentSearchType = tab;
+            
+            document.getElementById('searchResultsInfo').textContent = '';
+        }
+
+        async function searchByCuisine() {
+            const cuisine = document.getElementById('searchCuisine').value.trim();
+            
+            if (!cuisine) {
+                alert('Please enter a cuisine type');
+                return;
+            }
+            
+            console.log(' Searching by cuisine:', cuisine);
+            
+            try {
+                const result = await callAPI('search_cuisine', {
+                    userID: currentUser.userID,
+                    cuisine: cuisine
+                });
+                
+                console.log('Search result:', result);
+                
+                if (result.status === 'success') {
+                    displaySearchResults(result.restaurants || [], `Cuisine: ${cuisine}`);
+                } else {
+                    alert(result.message || 'Search failed');
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                alert('Search failed: ' + error.message);
+            }
+        }
+
+        async function searchByLocation() {
+            const location = document.getElementById('searchLocation').value.trim();
+            
+            if (!location) {
+                alert('Please enter a location');
+                return;
+            }
+            
+            console.log('Searching by location:', location);
+            
+            try {
+                const result = await callAPI('search_location', {
+                    userID: currentUser.userID,
+                    location: location
+                });
+                
+                console.log('Search result:', result);
+                
+                if (result.status === 'success') {
+                    displaySearchResults(result.restaurants || [], `Location: ${location}`);
+                } else {
+                    alert(result.message || 'Search failed');
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                alert('Search failed: ' + error.message);
+            }
+        }
+
+        async function searchByRating() {
+            const minRating = parseFloat(document.getElementById('minRating').value);
+            const maxRating = parseFloat(document.getElementById('maxRating').value);
+            
+            if (isNaN(minRating) || isNaN(maxRating)) {
+                alert('Please enter valid rating numbers');
+                return;
+            }
+            
+            if (minRating < 0 || minRating > 10 || maxRating < 0 || maxRating > 10) {
+                alert('Rating must be between 0 and 10');
+                return;
+            }
+            
+            if (minRating > maxRating) {
+                alert('Minimum rating cannot be greater than maximum rating');
+                return;
+            }
+            
+            console.log(' Searching by rating:', minRating, '-', maxRating);
+            
+            try {
+                const result = await callAPI('search_rating', {
+                    userID: currentUser.userID,
+                    minRating: minRating,
+                    maxRating: maxRating
+                });
+                
+                console.log('Search result:', result);
+                
+                if (result.status === 'success') {
+                    displaySearchResults(result.restaurants || [], `Rating: ${minRating} - ${maxRating}`);
+                } else {
+                    alert(result.message || 'Search failed');
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                alert('Search failed: ' + error.message);
+            }
+        }
+
+        async function searchByPrice() {
+            const minPrice = parseFloat(document.getElementById('minPrice').value);
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value);
+            
+            if (isNaN(minPrice) || isNaN(maxPrice)) {
+                alert('Please enter valid price numbers');
+                return;
+            }
+            
+            if (minPrice < 0 || maxPrice < 0) {
+                alert('Price cannot be negative');
+                return;
+            }
+            
+            if (minPrice > maxPrice) {
+                alert('Minimum price cannot be greater than maximum price');
+                return;
+            }
+            
+            console.log(' Searching by price:', minPrice, '-', maxPrice);
+            
+            try {
+                const result = await callAPI('search_price', {
+                    userID: currentUser.userID,
+                    minPrice: minPrice,
+                    maxPrice: maxPrice
+                });
+                
+                console.log('Search result:', result);
+                
+                if (result.status === 'success') {
+                    displaySearchResults(result.restaurants || [], `Price: Rs. ${minPrice} - ${maxPrice}`);
+                } else {
+                    alert(result.message || 'Search failed');
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                alert('Search failed: ' + error.message);
+            }
+        }
+
+        async function searchAll() {
+            const query = document.getElementById('searchName').value.trim();
+            
+            if (!query) {
+                alert('Please enter a search term');
+                return;
+            }
+            
+            console.log(' General search:', query);
+            
+            const result = await callAPI('get_restaurants', {userID: currentUser.userID});
+            
+            if (result.status === 'success' && result.restaurants) {
+                const filtered = result.restaurants.filter(rest => 
+                    (rest.name && rest.name.toLowerCase().includes(query.toLowerCase())) ||
+                    (rest.notes && rest.notes.toLowerCase().includes(query.toLowerCase()))
+                );
+                
+                displaySearchResults(filtered, `Search: "${query}"`);
+            }
+        }
+
+        function displaySearchResults(restaurants, searchInfo) {
+            const container = document.getElementById('restaurantsList');
+            const infoElement = document.getElementById('searchResultsInfo');
+            
+            if (!restaurants || restaurants.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-search" style="font-size: 3em; color: #ccc; margin-bottom: 20px;"></i>
+                        <h3>No restaurants found</h3>
+                        <p>No restaurants match your search criteria.</p>
+                        <button onclick="loadRestaurants()" class="btn secondary-btn" style="margin-top: 15px;">
+                            <i class="fas fa-list"></i> Show All Restaurants
+                        </button>
+                    </div>
+                `;
+                infoElement.textContent = `${searchInfo} • 0 results`;
+                return;
+            }
+            
+            infoElement.textContent = `${searchInfo} • ${restaurants.length} result(s)`;
+            
+            container.innerHTML = restaurants.map(rest => {
+                const rating = rest.rating ? parseFloat(rest.rating).toFixed(1) : 'N/A';
+                const price = rest.price ? Math.round(rest.price) : 'N/A';
+                
+                return `
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">${rest.name || 'Unknown'}</h3>
+                            <div class="card-badges">
+                                <span class="rating-badge">
+                                    <i class="fas fa-star"></i> ${rating}/10
+                                </span>
+                                <span class="price-badge">
+                                    <i class="fas fa-tag"></i> Rs. ${price}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="card-info">
+                                <p class="card-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <strong>Location:</strong> ${rest.location || 'N/A'}
+                                </p>
+                                <p class="card-item">
+                                    <i class="fas fa-utensils"></i>
+                                    <strong>Cuisine:</strong> ${rest.cuisine || 'N/A'}
+                                </p>
+                            </div>
+                            
+                            ${rest.notes ? `
+                                <div class="card-notes">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <strong>Notes:</strong> ${rest.notes}
+                                </div>
+                            ` : ''}
+                            
+                            ${rest.id ? `
+                                <div class="card-footer">
+                                    <small><i class="fas fa-hashtag"></i> ID: ${rest.id}</small>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
+        }
+
+        function showMessage(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => element.style.display = 'none', 3000);
+            }
+        }
+    </script>
+</body>
+</html>

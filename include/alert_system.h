@@ -32,6 +32,7 @@ public:
     int getUnreadCount(const string& userID);
     void markAllAsRead(const string& userID);
     void clearAlerts(const string& userID);
+    void markAlertsAsRead(const string& userID);
 };
 
 #endif

@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-Food Spot Memory Bank - Web UI Server
-Combines HTTP server + Socket client in one file
-"""
+
 
 import socket
 import json

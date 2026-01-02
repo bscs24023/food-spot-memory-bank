@@ -41,7 +41,7 @@ void AlertSystem::createAlert(const string& recipientID, const string& senderID,
     alert.timestamp = time(nullptr);
     alert.isRead = false;
     
-    cout << "📢 Creating alert:" << endl;
+    cout << " Creating alert:" << endl;
     cout << "  For: " << recipientID << endl;
     cout << "  From: " << senderName << endl;
     cout << "  Restaurant: " << restaurantName << endl;
@@ -53,7 +53,7 @@ void AlertSystem::notifyFriends(const string& userID, const string& username,
                                const string& restaurantID, const string& restaurantName,
                                const vector<string>& friendIDs) {
     
-    cout << "\n🔔 NOTIFYING FRIENDS:" << endl;
+    cout << "\n NOTIFYING FRIENDS:" << endl;
     cout << "  User: " << username << " added: " << restaurantName << endl;
     cout << "  Friends to notify: " << friendIDs.size() << endl;
     
@@ -62,13 +62,13 @@ void AlertSystem::notifyFriends(const string& userID, const string& username,
     }
     
     if (!friendIDs.empty()) {
-        cout << "  ✓ Notified " << friendIDs.size() << " friend(s)" << endl;
+        cout << "   Notified " << friendIDs.size() << " friend(s)" << endl;
         saveAlerts();
     }
 }
 
 vector<Alert> AlertSystem::getAlerts(const string& userID) {
-    cout << "\n📨 GET_ALERTS for user: " << userID << endl;
+    cout << "\n GET_ALERTS for user: " << userID << endl;
     
     vector<Alert> alerts;
     auto it = userAlerts.find(userID);
@@ -274,7 +274,7 @@ void AlertSystem::markAlertsAsRead(const string& userID) {
         return;
     }
     
-    cout << "📭 Marking alerts as read for user: " << userID << endl;
+    cout << " Marking alerts as read for user: " << userID << endl;
     cout << "  Before: " << it->second.size() << " unread alerts" << endl;
     
     queue<Alert> newQueue;

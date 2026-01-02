@@ -95,7 +95,7 @@ bool UserManager::addFriend(const string& userID, const string& friendID) {
     }
     
     if (areFriends(userID, friendID)) {
-        cout << "⚠️  Already friends!" << endl;
+        cout << "  Already friends!" << endl;
         return false;
     }
     
